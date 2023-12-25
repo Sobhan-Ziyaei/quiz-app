@@ -10,6 +10,8 @@ const container = document.getElementById("container");
 const questionText = document.getElementById("question-text");
 const answerList = document.querySelectorAll(".answer-text");
 const score = document.getElementById("score");
+const nextButton = document.getElementById("next-button");
+const questionNumber = document.getElementById("question-number");
 
 let formattedData = null;
 let questionIndex = 0;
@@ -39,6 +41,7 @@ const showQuestion = () => {
     formattedData[questionIndex];
   correctAnswer = correctAnswerIndex;
   questionText.innerText = question;
+  questionNumber.innerText = questionIndex + 1;
   answerList.forEach((button, index) => {
     button.innerText = answers[index];
   });
@@ -59,8 +62,25 @@ const checkAnswer = (event, index) => {
   }
 };
 
+const nextQuestion = () => {
+  questionIndex++;
+  if (questionIndex < formattedData.length) {
+    isAccepted = true;
+    removeClasses();
+    showQuestion();
+  } else {
+    window.location.assign("./end.html");
+  }
+};
+
+const removeClasses = () => {
+  answerList.forEach((button) => (button.className = "answer-text"));
+};
+
 window.addEventListener("load", fetchData);
 answerList.forEach((button, index) => {
   //below code why use arrowFunction in EventListener ? -> به خاطر اینکه نمیخوایم در لحظه اجرا شود
   button.addEventListener("click", (event) => checkAnswer(event, index));
 });
+
+nextButton.addEventListener("click", nextQuestion);
