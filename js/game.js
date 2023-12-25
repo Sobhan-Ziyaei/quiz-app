@@ -1,7 +1,8 @@
 import formatData from "./utils.js";
 
-const URL =
-  "https://opentdb.com/api.php?amount=10&difficulty=medium&type=multiple";
+const level = localStorage.getItem("level") || "medium";
+
+const URL = `https://opentdb.com/api.php?amount=10&difficulty=${level}&type=multiple`;
 
 const CORRECT_BONUS = 10;
 
@@ -13,6 +14,7 @@ const score = document.getElementById("score");
 const nextButton = document.getElementById("next-button");
 const questionNumber = document.getElementById("question-number");
 const finishButton = document.getElementById("finish-button");
+const error = document.getElementById("error");
 
 let formattedData = null;
 let questionIndex = 0;
@@ -21,14 +23,18 @@ let scoreUser = 0;
 let isAccepted = true;
 
 const fetchData = async () => {
-  const response = await fetch(URL);
-  const json = await response.json();
-  formattedData = formatData(json.results);
-  console.log(formattedData);
+  try {
+    const response = await fetch(URL);
+    const json = await response.json();
+    formattedData = formatData(json.results);
 
-  setTimeout(() => {
-    start();
-  }, 1000);
+    setTimeout(() => {
+      start();
+    }, 1000);
+  } catch (err) {
+    loader.style.display = "none";
+    error.style.display = "block";
+  }
 };
 
 const start = () => {
